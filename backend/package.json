@@ -46,7 +46,7 @@
     "otp-generator": "^4.0.1",
     "prettier": "^3.3.3",
     "ws": "^8.18.0",
-    "zod": "^3.23.8"
+    "zod": "^4.1.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
