@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/:match*",
-      "destination": "https://chatterapi.campusify.site/api/:match*"
+      "destination": "https://api.campusify.space/api/:match*"
     },
     {
       "source": "/ws/:match*",
-      "destination": "wss://realtime.campusify.site/:match*"
+      "destination": "wss://ws.campusify.space/:match*"
     },
     {
       "source": "/(.*)",
