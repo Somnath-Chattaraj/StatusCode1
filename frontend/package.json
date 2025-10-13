@@ -11,7 +11,7 @@
     "generate-sitemap": "node generate-sitemap.js"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
+    "@chakra-ui/react": "^3.27.1",
     "@daily-co/daily-js": "^0.77.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
