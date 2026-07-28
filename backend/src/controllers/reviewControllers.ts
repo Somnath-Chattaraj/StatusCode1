@@ -168,7 +168,7 @@ const getBulkReviews = asyncHandler(async (req: Request, res: Response) => {
 
 // @ts-ignore
 const filterReviews = asyncHandler(async (req: Request, res: Response) => {
-  const { keyword } = req.query;
+  const { keyword } = req.query as { keyword?: string };
 
   if (!keyword || typeof keyword !== "string") {
     return res
@@ -219,7 +219,7 @@ const filterReviews = asyncHandler(async (req: Request, res: Response) => {
 
 // @ts-ignore
 const getFullReview = asyncHandler(async (req: Request, res: Response) => {
-  const { reviewId } = req.params;
+  const reviewId = req.params.reviewId as string;
   const review = await prisma.review.findFirst({
     where: {
       review_id: reviewId,
@@ -268,7 +268,7 @@ const getFullReview = asyncHandler(async (req: Request, res: Response) => {
 
 // @ts-ignore
 const deleteReview = asyncHandler(async (req: Request, res: Response) => {
-  const { reviewId } = req.params;
+  const reviewId = req.params.reviewId as string;
   // @ts-ignore
   const user_id = req.user.user_id;
   const review = await prisma.review.findFirst({
@@ -296,7 +296,7 @@ const deleteReview = asyncHandler(async (req: Request, res: Response) => {
 
 // @ts-ignore
 const editReview = asyncHandler(async (req: Request, res: Response) => {
-  const { reviewId } = req.params;
+  const reviewId = req.params.reviewId as string;
   const { rating, updateReview } = req.body;
   // @ts-ignore
   const user_id = req.user.user_id;

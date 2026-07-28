@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 
 export const getChatHistory = async (req: Request, res: Response) => {
-  const { roomId } = req.params;
+  const roomId = req.params.roomId as string;
 
   try {
     
@@ -61,7 +61,7 @@ export const listChatRooms = async (req: Request, res: Response) => {
 };
 
 export const getChatRoomDetails = async (req: Request, res: Response) => {
-  const { roomId } = req.params;
+  const roomId = req.params.roomId as string;
 
   try {
     const chatRoom = await prisma.chatRoom.findUnique({

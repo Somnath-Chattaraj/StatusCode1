@@ -1,12 +1,12 @@
-import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma";
 import redis from "../lib/redis";
+import { verify } from "../lib/jwt";
 // @ts-ignore
 async function requireAuth(req, res, next) {
   try {
     const token = req.cookies.Authorization;
     // @ts-ignore
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = await verify(token, process.env.SECRET);
     // @ts-ignore
     if (Date.now() >= decoded.exp) {
       res.sendStatus(410);

@@ -238,7 +238,7 @@ const likePost = asyncHandler(async (req: Request, res: Response) => {
 
 // @ts-ignore
 const fetchSinglePost = asyncHandler(async (req: Request, res: Response) => {
-  const postId = req.params.id;
+  const postId = req.params.id as string;
   const post = await prisma.post.findUnique({
     where: { post_id: postId },
     select: {

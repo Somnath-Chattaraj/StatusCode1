@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
-import jwt from "jsonwebtoken";
+import { sign, verify } from "../lib/jwt";
 import bcrypt from "bcrypt";
 import sendMail from "../mail/sendMail";
 import { Verifier } from "academic-email-verifier";
@@ -39,7 +39,7 @@ const googleSignInOrSignUp = asyncHandler(
         },
       });
       const exp = Date.now() + 1000 * 60 * 60 * 24 * 30;
-      const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+      const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
       res.cookie("Authorization", token, {
         httpOnly: true,
         secure: false,
@@ -51,7 +51,7 @@ const googleSignInOrSignUp = asyncHandler(
     }
     const exp = Date.now() + 1000 * 60 * 60 * 24 * 30;
     const isCollegeEmail = false;
-    const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+    const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
     res.cookie("Authorization", token, {
       httpOnly: true,
       secure: false,
@@ -92,7 +92,7 @@ const githubSignInOrSignUp = asyncHandler(
         },
       });
       const exp = Date.now() + 1000 * 60 * 60 * 24 * 30;
-      const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+      const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
       res.cookie("Authorization", token, {
         httpOnly: true,
         secure: false,
@@ -104,7 +104,7 @@ const githubSignInOrSignUp = asyncHandler(
     }
     const exp = Date.now() + 1000 * 60 * 60 * 24 * 30;
     const isCollegeEmail = false;
-    const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+    const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
     res.cookie("Authorization", token, {
       httpOnly: true,
       secure: false,
@@ -227,7 +227,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
       },
     });
     const exp = Date.now() + 1000 * 60 * 5;
-    const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+    const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
     const url = `${process.env.BACKEND_URL}/api/user/verify/${token}`;
     const htmlContent = `<a href="${url}">Verify using this link</a>`;
     sendMail(htmlContent, email);
@@ -242,7 +242,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
       },
     });
     const exp = Date.now() + 1000 * 60 * 5;
-    const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+    const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
     const url = `${process.env.BACKEND_URL}/api/user/verify/${token}`;
     const htmlContent = `<a href="${url}">Verify using this link</a>`;
     sendMail(htmlContent, email);
@@ -276,7 +276,7 @@ const verifyUser = asyncHandler(async (req: Request, res: Response) => {
     return;
   }
   // @ts-ignore
-  const { sub, exp } = jwt.verify(token, process.env.SECRET);
+  const { sub, exp } = await verify(token, process.env.SECRET);
   // @ts-ignore
   if (exp < Date.now()) {
     res
@@ -334,7 +334,7 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   if (!user.emailVerified) {
     const exp = Date.now() + 1000 * 60 * 5;
     // @ts-ignore
-    const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+    const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
     const url = `${process.env.BACKEND_URL}/api/user/verify/${token}`;
     const htmlContent = `<a href="${url}">Verify using this link</a>`;
     sendMail(htmlContent, email);
@@ -347,7 +347,7 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
     return;
   }
   const exp = Date.now() + 1000 * 60 * 60 * 24 * 30;
-  const token = jwt.sign({ sub: user.user_id, exp }, process.env.SECRET);
+  const token = await sign({ sub: user.user_id, exp }, process.env.SECRET);
   res.cookie("Authorization", token, {
     httpOnly: true,
     secure: false,
@@ -396,7 +396,7 @@ const getCurrentUserDetails = asyncHandler(
 );
 
 const getUserDetailsById = asyncHandler(async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const userId = req.params.userId as string;
   const user = await prisma.user.findUnique({
     where: {
       user_id: userId,
